@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Orders and Deliveries Matching Analysis</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    .tabs { margin-top: 20px; }
+    .tab-button { margin-right: 10px; padding: 10px 20px; cursor: pointer; }
+    .tab-content { margin-top: 20px; display: none; }
+    .tab-content.active { display: block; }
+    #loadingSpinner {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Upload Orders and Deliveries</h1>
+
+  <h3>Orders CSV Files:</h3>
+  <input type="file" id="ordersInput" multiple accept=".csv"><br><br>
+
+  <h3>Deliveries CSV Files:</h3>
+  <input type="file" id="deliveriesInput" multiple accept=".csv"><br><br>
+
+  <button onclick="downloadCleanedData()">Download Final Cleaned Data</button>
+
+  <!-- Spinner for loading -->
+  <div id="loadingSpinner">
+    <img src="https://i.imgur.com/llF5iyg.gif" alt="Loading..." width="50" />
+    <p>Processing files, please wait...</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-button" onclick="openTab('summaryTab')">Summary</button>
+    <button class="tab-button" onclick="openTab('visualizationTab')">Visualizations</button>
+  </div>
+
+  <div id="summaryTab" class="tab-content">
+    <h2>Summary</h2>
+    <div id="summaryOutput">Upload your files to see the summary here.</div>
+  </div>
+
+  <div id="visualizationTab" class="tab-content">
+    <h2>Visualizations</h2>
+    <h3>Top Suppliers with Unmatched Orders</h3>
+    <canvas id="chartCanvas1" width="400" height="200"></canvas>
+
+    <h3>Top Stores with Unmatched Orders</h3>
+    <canvas id="chartCanvas2" width="400" height="200"></canvas>
+  </div>
+
+  <!-- Import libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Your app.js file -->
+  <script src="app.js"></script>
+
+  <script>
+    function openTab(tabId) {
+      const tabs = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
