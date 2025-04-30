@@ -172,8 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showVisualizations() {
-    const unmatchedOrders = matchedFull.filter(row => row.deliveryCount === 0);
-
+    const unmatchedOrders = matchedFull.filter(row => !row.Matched);
     const supplierCounts = countByField(unmatchedOrders, 'Supplier');
     const topSuppliers = Object.entries(supplierCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
 
