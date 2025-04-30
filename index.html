@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Orders and Deliveries Matching Analysis</title>
+  
+  <!-- External Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     body { font-family: Arial, sans-serif; margin: 30px; }
     .tabs { margin-top: 20px; }
@@ -16,8 +21,8 @@
     }
   </style>
 </head>
-<body>
 
+<body>
   <h1>Upload Orders and Deliveries</h1>
 
   <h3>Orders CSV Files:</h3>
@@ -26,9 +31,10 @@
   <h3>Deliveries CSV Files:</h3>
   <input type="file" id="deliveriesInput" multiple accept=".csv"><br><br>
 
-  <button onclick="downloadCleanedData()">Download Final Cleaned Data</button>
+  <button onclick="downloadCleanedData()">Download Matched Data</button>
+  <button onclick="downloadOrdersData()">Download Cleaned Orders Data</button>
+  <button onclick="downloadDeliveriesData()">Download Cleaned Deliveries Data</button>
 
-  <!-- Spinner for loading -->
   <div id="loadingSpinner">
     <img src="https://i.imgur.com/llF5iyg.gif" alt="Loading..." width="50" />
     <p>Processing files, please wait...</p>
@@ -46,6 +52,7 @@
 
   <div id="visualizationTab" class="tab-content">
     <h2>Visualizations</h2>
+
     <h3>Top Suppliers with Unmatched Orders</h3>
     <canvas id="chartCanvas1" width="400" height="200"></canvas>
 
@@ -53,11 +60,7 @@
     <canvas id="chartCanvas2" width="400" height="200"></canvas>
   </div>
 
-  <!-- Import libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Your app.js file -->
+  <!-- Link your app.js -->
   <script src="app.js"></script>
 
   <script>
@@ -67,6 +70,5 @@
       document.getElementById(tabId).classList.add('active');
     }
   </script>
-
 </body>
 </html>
