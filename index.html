@@ -56,19 +56,31 @@
     <h3>Top Suppliers with Unmatched Orders</h3>
     <canvas id="chartCanvas1" width="400" height="200"></canvas>
 
+    <h3>Top Suppliers with Unmatched Deliveries</h3>
+    <canvas id="chartCanvas3" width="400" height="200"></canvas>
+
     <h3>Top Stores with Unmatched Orders</h3>
     <canvas id="chartCanvas2" width="400" height="200"></canvas>
+
+    <h3>Top Stores with Unmatched Deliveries</h3>
+    <canvas id="chartCanvas4" width="400" height="200"></canvas>
+
+    <h3>Unmatched Orders vs Deliveries Over Time</h3>
+    <canvas id="chartCanvas5" width="600" height="300"></canvas>
+ 
   </div>
 
   <!-- Link your app.js -->
   <script src="app.js"></script>
 
   <script>
-    function openTab(tabId) {
+    // Fixes the openTab error by attaching it to window
+    window.openTab = function(tabId) {
       const tabs = document.querySelectorAll('.tab-content');
       tabs.forEach(tab => tab.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
-    }
+    };
   </script>
+  
 </body>
 </html>

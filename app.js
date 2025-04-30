@@ -172,42 +172,169 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showVisualizations() {
-    const unmatchedOrders = matchedFull.filter(row => !row.Matched);
-    const supplierCounts = countByField(unmatchedOrders, 'Supplier');
-    const topSuppliers = Object.entries(supplierCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
 
+    const unmatchedOrders = matchedFull.filter(row => !row.Matched);
+    const unmatchedDeliveries = deliveriesFull.filter(delivery => {
+      return !ordersFull.some(order =>
+        normalize(order['No.']) === normalize(delivery['PO nos.'])
+      );
+    });
+  
+    // ===== CHART 1: Unmatched Orders by Supplier =====
+    const orderSupplierCounts = countByField(unmatchedOrders, 'Supplier');
+    const topOrderSuppliers = Object.entries(orderSupplierCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  
     const ctx1 = document.getElementById('chartCanvas1').getContext('2d');
     if (window.chart1) window.chart1.destroy();
     window.chart1 = new Chart(ctx1, {
       type: 'bar',
       data: {
-        labels: topSuppliers.map(x => x[0]),
+        labels: topOrderSuppliers.map(x => x[0]),
         datasets: [{
           label: 'Unmatched Orders by Supplier',
-          data: topSuppliers.map(x => x[1]),
+          data: topOrderSuppliers.map(x => x[1]),
           backgroundColor: 'rgba(255, 99, 132, 0.6)'
         }]
       },
       options: { scales: { y: { beginAtZero: true } } }
     });
-
-    const storeCounts = countByField(unmatchedOrders, 'Store');
-    const topStores = Object.entries(storeCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
-
+  
+    // ===== CHART 2: Unmatched Orders by Store =====
+    const orderStoreCounts = countByField(unmatchedOrders, 'Store');
+    const topOrderStores = Object.entries(orderStoreCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  
     const ctx2 = document.getElementById('chartCanvas2').getContext('2d');
     if (window.chart2) window.chart2.destroy();
     window.chart2 = new Chart(ctx2, {
       type: 'bar',
       data: {
-        labels: topStores.map(x => x[0]),
+        labels: topOrderStores.map(x => x[0]),
         datasets: [{
           label: 'Unmatched Orders by Store',
-          data: topStores.map(x => x[1]),
+          data: topOrderStores.map(x => x[1]),
           backgroundColor: 'rgba(54, 162, 235, 0.6)'
         }]
       },
       options: { scales: { y: { beginAtZero: true } } }
     });
+  
+    // ===== CHART 3: Unmatched Deliveries by Supplier =====
+    const deliverySupplierCounts = countByField(unmatchedDeliveries, 'Supplier');
+    const topDeliverySuppliers = Object.entries(deliverySupplierCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  
+    const ctx3 = document.getElementById('chartCanvas3').getContext('2d');
+    if (window.chart3) window.chart3.destroy();
+    window.chart3 = new Chart(ctx3, {
+      type: 'bar',
+      data: {
+        labels: topDeliverySuppliers.map(x => x[0]),
+        datasets: [{
+          label: 'Unmatched Deliveries by Supplier',
+          data: topDeliverySuppliers.map(x => x[1]),
+          backgroundColor: 'rgba(255, 206, 86, 0.6)'
+        }]
+      },
+      options: { scales: { y: { beginAtZero: true } } }
+    });
+  
+    // ===== CHART 4: Unmatched Deliveries by Store =====
+    const deliveryStoreCounts = countByField(unmatchedDeliveries, 'Store');
+    const topDeliveryStores = Object.entries(deliveryStoreCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  
+    const ctx4 = document.getElementById('chartCanvas4').getContext('2d');
+    if (window.chart4) window.chart4.destroy();
+    window.chart4 = new Chart(ctx4, {
+      type: 'bar',
+      data: {
+        labels: topDeliveryStores.map(x => x[0]),
+        datasets: [{
+          label: 'Unmatched Deliveries by Store',
+          data: topDeliveryStores.map(x => x[1]),
+          backgroundColor: 'rgba(153, 102, 255, 0.6)'
+        }]
+      },
+      options: { scales: { y: { beginAtZero: true } } }
+    });
+  
+    // ===== CHART 5: Unmatched Orders & Deliveries Over Time =====
+    function getMonthKey(dateStr) {
+      if (!dateStr) return 'Unknown';
+      const parsed = new Date(dateStr);
+      if (isNaN(parsed)) return 'Unknown';
+      return `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    const orderDateCounts = {};
+    unmatchedOrders.forEach(row => {
+      const rawDate = (row['Ordered'] || '').trim(); // You confirmed this is the correct key
+      const key = getMonthKey(rawDate);
+      if (key !== 'Unknown') {
+        orderDateCounts[key] = (orderDateCounts[key] || 0) + 1;
+      }
+    });
+
+    const deliveryDateCounts = {};
+    unmatchedDeliveries.forEach(row => {
+      const rawDate = (row['Delivery date'] || '').trim(); // You confirmed this is the correct key
+      const key = getMonthKey(rawDate);
+      if (key !== 'Unknown') {
+        deliveryDateCounts[key] = (deliveryDateCounts[key] || 0) + 1;
+      }
+    });
+
+    const allMonths = Array.from(new Set([...Object.keys(orderDateCounts), ...Object.keys(deliveryDateCounts)])).sort();
+
+    const ctx5 = document.getElementById('chartCanvas5').getContext('2d');
+    if (window.chart5) window.chart5.destroy();
+    window.chart5 = new Chart(ctx5, {
+      type: 'line',
+      data: {
+        labels: allMonths,
+        datasets: [
+          {
+            label: 'Unmatched Orders',
+            data: allMonths.map(m => orderDateCounts[m] || 0),
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            tension: 0.3,
+            fill: false
+          },
+          {
+            label: 'Unmatched Deliveries',
+            data: allMonths.map(m => deliveryDateCounts[m] || 0),
+            borderColor: 'orange',
+            backgroundColor: 'rgba(255, 165, 0, 0.2)',
+            tension: 0.3,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Unmatched Orders & Deliveries Over Time (Monthly)'
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Month'
+            }
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Count'
+            }
+          }
+        }
+      }
+    });
+
   }
 
   function showLoading() {
