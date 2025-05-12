@@ -1,6 +1,6 @@
 # Cal Jamix Analysis Tool
 
-This is a lightweight, browser-based tool designed to help non-technical users at UC Berkeley quickly analyze Jamix order and delivery data — no Python, Tableau, or advanced technical knowledge required.
+This is a lightweight, browser-based tool designed to help non-technical users at UC Berkeley quickly analyze Jamix order and delivery data (no Python, Tableau, or advanced technical knowledge required).
 
 ## Why This Exists
 
