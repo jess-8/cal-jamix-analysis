@@ -609,4 +609,57 @@ function showVisualizations() {
     }
   };
 
+    // === Financial Analysis Function ===
+  window.submitFinancialAnalysis() = function() {
+    const fileInput = document.getElementById("deliveriesInput");
+    const month = document.getElementById("monthSelect").value;
+    const year = document.getElementById("yearSelect").value;
+
+    if (!fileInput.files.length || !month || !year) {
+      alert("Please select a file, month, and year.");
+      return;
+    }
+
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("dates", JSON.stringify([[parseInt(year), parseInt(month)]])); // [[year, month]]
+
+    fetch("http://localhost:5000/process-deliveries", {
+      method: "POST",
+      body: formData
+    })
+      .then(response => response.json())
+      .then(result => {
+        const table = document.createElement("table");
+        table.classList.add("financial-table");
+
+        const headerRow = document.createElement("tr");
+        Object.keys(result[0]).forEach(key => {
+          const th = document.createElement("th");
+          th.textContent = key;
+          headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        result.forEach(row => {
+          const tr = document.createElement("tr");
+          Object.values(row).forEach(value => {
+            const td = document.createElement("td");
+            td.textContent = typeof value === "number" ? value.toFixed(2) : value;
+            tr.appendChild(td);
+          });
+          table.appendChild(tr);
+        });
+
+        const outputDiv = document.getElementById("financialResults");
+        outputDiv.innerHTML = "";
+        outputDiv.appendChild(table);
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        alert("Backend error. Is Flask running?");
+      });
+  }
+
 });
