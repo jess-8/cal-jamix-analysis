@@ -609,8 +609,7 @@ function showVisualizations() {
     }
   };
 
-    // === Financial Analysis Function ===
-  window.submitFinancialAnalysis() = function() {
+  window.submitFinancialAnalysis = function() {
     const fileInput = document.getElementById("deliveriesInput");
     const month = document.getElementById("monthSelect").value;
     const year = document.getElementById("yearSelect").value;
