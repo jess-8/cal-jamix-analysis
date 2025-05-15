@@ -220,8 +220,8 @@
       <h2>Financial Analysis</h2>
 
       <div class="section">
-        <label for="monthSelect">Month:</label>
-        <select id="monthSelect">
+        <label for="monthSelect">Month(s):</label>
+        <select id="monthSelect" multiple size="6">
         <option value="" disabled selected>Select month</option>
         <option value="1">January</option>
         <option value="2">February</option>
@@ -237,8 +237,9 @@
         <option value="12">December</option>
       </select>
 
-      <label for="yearSelect">Year:</label>
-      <select id="yearSelect">
+      <!--Select year -- this is manual input, unfortunately-->
+      <label for="yearSelect">Year(s):</label>
+      <select id="yearSelect" multiple size="4">
         <option value="" disabled selected>Select year</option>
         <option value="2024">2024</option>
         <option value="2025">2025</option>
